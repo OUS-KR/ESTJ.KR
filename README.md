@@ -18,8 +18,8 @@
   - 동일한 단축 경로 존재 시 덮어쓰기
 - `ESTJ.KR/@{사용자 아이디}/{단축 경로}` 형태의 짧은 주소 지원
   - 사용자 단축주소 예제: [ESTJ.KR/@estj/links/estj-kr](https://estj.kr/@estj/links/estj-kr)
-- 단축 경로가 `links`로 시작하면 `ESTJ.KR/@{사용자 아이디}/@{links를 제외한 단축 경로}` 형태로 생략 가능
-  - 사용자 단축주소 예제: [ESTJ.KR/@estj/@estj-kr](https://estj.kr/@estj/@estj-kr)
+- 단축 경로가 `links`로 시작하면 `ESTJ.KR/@{사용자 아이디}/!{links를 제외한 단축 경로}` 형태로 생략 가능
+  - 사용자 단축주소 예제: [ESTJ.KR/@estj/!estj-kr](https://estj.kr/@estj/!estj-kr)
 
 ### [사용자 글 작성](https://github.com/OUS-KR/ESTJ.KR/issues/new?template=03-user-article-writing-by-issue.yml)
 
