@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘의 운세 - INTP</title>
+    <title>오늘의 운세 - ESTJ</title>
     <link rel="stylesheet" href="/u/tests/assets/css/main.css?20251010120000">
     <style>
         /* Custom styles are now handled by main.css through .info-card */
@@ -16,7 +16,7 @@
 </head>
 <body>
     <header class="main-nav">
-        <a href="/u/tests/" class="logo">INTP.KR Tests</a>
+        <a href="/u/tests/" class="logo">ESTJ.KR Tests</a>
         <div class="nav-right-section">
             <nav class="nav-links" id="nav-links"></nav>
             <button id="theme-switcher" class="theme-switcher">🌙</button>
@@ -25,7 +25,7 @@
     </header>
 
     <div class="container">
-        <h1>오늘의 INTP 운세</h1>
+        <h1>오늘의 ESTJ 운세</h1>
         <div id="fortuneContent">
             <div class="card info-card">
                 <div class="card-title"><span class="icon">💡</span> 오늘의 조언</div>
@@ -36,8 +36,8 @@
                 <p id="taskDisplay">과제를 불러오는 중...</p>
             </div>
             <div class="card info-card">
-                <div class="card-title"><span class="icon">📈</span> INTP 지수</div>
-                <p id="intpIndexDisplay">INTP 지수를 불러오는 중...</p>
+                <div class="card-title"><span class="icon">📈</span> ESTJ 지수</div>
+                <p id="mbtiIndexDisplay">ESTJ 지수를 불러오는 중...</p>
             </div>
             <div class="card info-card">
                 <div class="card-title"><span class="icon">🔑</span> 행운의 키워드</div>
@@ -103,7 +103,7 @@
             subjects: ["과학적 원리", "철학적 개념", "복잡한 시스템", "사회적 현상", "미해결 문제", "역사적 사건"],
             verbs: ["에 대해 15분간 깊이 파고들어 보세요.", "의 핵심을 한 문장으로 요약해 보세요.", "을(를) 비전문가도 이해할 수 있도록 설명하는 글을 써보세요.", "과/와 관련된 새로운 아이디어를 3가지 이상 기록해 보세요.", "의 작동 방식을 다이어그램으로 그려보세요."]
         },
-        intpIndex: {
+        mbtiIndex: {
             reasons: ["논리 회로가 명료하게 작동하여", "창의적 영감이 샘솟아", "지적 탐구심이 최고조에 달해", "시스템 전체를 꿰뚫어보는 통찰력이 발휘되어", "복잡한 정보 속에서 패턴을 발견하여"],
             results: ["분석적 사고력이 극대화됩니다.", "새로운 아이디어를 현실화할 가능성이 높습니다.", "복잡한 문제도 쉽게 해결할 수 있습니다.", "지적인 만족감을 크게 느낄 수 있습니다."]
         },
@@ -148,7 +148,7 @@
         return `${type} ${rawSentence}`;
     }
 
-    function generateIntpIndex(randFn, parts) {
+    function generateMbtiIndex(randFn, parts) {
         const pick = (arr) => arr[Math.floor(randFn() * arr.length)];
         const percentage = 65 + Math.floor(randFn() * 31); // 65% to 95%
         return `${percentage}% - ${pick(parts.reasons)} ${pick(parts.results)}`;
@@ -167,7 +167,7 @@
 
             document.getElementById('adviceDisplay').innerText = generateAdvice(randFn, data.advice);
             document.getElementById('taskDisplay').innerText = generateTask(randFn, data.task);
-            document.getElementById('intpIndexDisplay').innerText = generateIntpIndex(randFn, data.intpIndex);
+            document.getElementById('mbtiIndexDisplay').innerText = generateMbtiIndex(randFn, data.mbtiIndex);
             document.getElementById('keywordDisplay').innerText = generateKeywords(randFn, data.keywords, 5);
         } catch (e) {
             console.error("오늘의 운세 생성 중 오류 발생:", e);
