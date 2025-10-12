@@ -5,67 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESTJ 빙고 챌린지</title>
     <link rel="stylesheet" href="/u/tests/assets/css/main.css?20251012150000">
+    <style>
+        .bingo-container {
+            overflow-x: auto;
+            padding-bottom: 10px; /* Make space for scrollbar */
+        }
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+            min-width: 500px; /* Prevent tiles from becoming too small */
+        }
+        .bingo-cell {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.9em;
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
+        }
+        .bingo-cell.checked {
+            background-color: var(--h-color);
+            color: var(--container-bg);
+            font-weight: bold;
+        }
+        .bingo-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        #bingo-counter {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        #reset-btn {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            background-color: var(--card-border);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="main-nav">
         <a href="/u/tests/" class="logo">ESTJ.KR Tests</a>
         <div class="nav-right-section">
-            <nav class="nav-links" id="nav-links">
-                <div class="nav-item dropdown">
-                    <button class="dropdown-toggle">오늘의 콘텐츠</button>
-                    <div class="dropdown-menu">
-                        <a href="/u/tests/today-fortune/">오늘의 운세</a>
-                        <a href="/u/tests/today-game/">오늘의 게임</a>
-                    </div>
-                </div>
-                <div class="nav-item dropdown">
-                    <button class="dropdown-toggle">정보</button>
-                    <div class="dropdown-menu">
-                        <a href="/u/tests/info-characteristics/">특징</a>
-                        <a href="/u/tests/info-careers/">커리어</a>
-                        <a href="/u/tests/info-cognitive-functions/">인지기능</a>
-                        <a href="/u/tests/info-subtypes/">하위유형</a>
-                        <a href="/u/tests/info-relationships/">인간관계</a>
-                        <a href="/u/tests/info-misconceptions/">흔한 오해</a>
-                        <a href="/u/tests/info-hobbies/">추천 취미</a>
-                        <a href="/u/tests/info-productivity/">생산성 가이드</a>
-                    </div>
-                </div>
-                <div class="nav-item dropdown">
-                    <button class="dropdown-toggle">테스트</button>
-                    <div class="dropdown-menu">
-                        <a href="/u/tests/test-systematic-work-management/">체계적 업무 관리 테스트</a>
-                        <a href="/u/tests/test-relationship-style/">연애 스타일 테스트</a>
-                        <a href="/u/tests/test-stress-triggers/">스트레스 테스트</a>
-                        <a href="/u/tests/test-realistic-problem-solving/">현실적 문제 해결 테스트</a>
-                        <a href="/u/tests/test-bingo/">빙고 챌린지</a>
-                        <a href="/u/tests/test-leadership-principles/">리더십 원칙 테스트</a>
-                        <a href="/u/tests/test-rule-adherence/">규칙 준수도 테스트</a>
-                    </div>
-                </div>
-                <div class="nav-item dropdown">
-                    <button class="dropdown-toggle">게임</button>
-                    <div class="dropdown-menu">
-                        <a href="/u/tests/game-strategic-management/">전략 경영 시뮬레이션</a>
-                        <a href="/u/tests/game-resource-optimization/">자원 최적화 시뮬레이션</a>
-                        <a href="/u/tests/game-city-builder/">도시 건설</a>
-                        <a href="/u/tests/game-rule-based-strategy/">규칙 기반 전략 게임</a>
-                        <a href="/u/tests/game-project-manager/">프로젝트 매니저 시뮬레이션</a>
-                        <a href="/u/tests/game-supply-chain-mogul/">물류의 제왕</a>
-                        <a href="/u/tests/game-law-and-order/">법과 질서</a>
-                        <a href="/u/tests/game-factory-architect/">공장 건축가</a>
-                        <a href="/u/tests/game-music-memory/">음악 기억력 게임</a>
-                        <a href="/u/tests/game-rhythm-master/">리듬 게임</a>
-                    </div>
-                </div>
-            </nav>
+            <nav class="nav-links" id="nav-links"></nav>
             <button id="theme-switcher" class="theme-switcher">🌙</button>
             <button id="hamburger" class="hamburger">☰</button>
         </div>
     </header>
     <div class="container">
         <h1>ESTJ 빙고 챌린지</h1>
-        <p style="text-align:center;">당신은 얼마나 ESTJ의 특징을 가지고 있을까요? 재미있는 빙고 챌린지를 통해 당신의 ESTJ 지수를 확인하고, 친구들과 공감대를 형성해 보세요!</p>
+        <p style="text-align:center;">나는 얼마나 ESTJ일까? 아래 빙고판에서 해당하는 항목을 클릭해 보세요.<br>완성된 빙고판을 캡쳐해서 친구들과 공유해 보세요!</p>
         
         <div class="bingo-controls">
             <div id="bingo-counter">체크된 항목 0/25</div>
@@ -110,6 +115,9 @@
                 "고집 세다는 말 들어봄",
                 "공감 능력 부족하다는 말 들어봄",
                 "뒤에서 욕할 바엔 앞에서 말함",
+                "\"이게 최선입니까? 확실해요?\"",
+                "나서서 총대 메는 스타일",
+                "남 가르치는 거 좋아함",
                 "\"됐고, 팩트만 말해\""
             ];
 
