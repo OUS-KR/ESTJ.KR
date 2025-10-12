@@ -68,5 +68,117 @@
         "description": "미루는 습관을 이기는 법"
       }
     ]
+  },
+  {
+    "mainTitle": "테스트",
+    "items": [
+      {
+        "title": "ESTJ 체계적 업무 관리 테스트",
+        "url": "/u/tests/test-systematic-work-management/",
+        "type": "테스트",
+        "description": "ESTJ의 뛰어난 조직력과 계획성을 바탕으로 업무를 효율적으로 관리하고 실행하는 능력을 측정합니다."
+      },
+      {
+        "title": "ESTJ 연애 스타일 테스트",
+        "url": "/u/tests/test-relationship-style/",
+        "type": "테스트",
+        "description": "ESTJ의 연애 스타일 알아보기"
+      },
+      {
+        "title": "ESTJ 스트레스 원인 테스트",
+        "url": "/u/tests/test-stress-triggers/",
+        "type": "테스트",
+        "description": "스트레스 원인 진단 테스트"
+      },
+      {
+        "title": "ESTJ 현실적 문제 해결 테스트",
+        "url": "/u/tests/test-realistic-problem-solving/",
+        "type": "테스트",
+        "description": "추상적인 이론보다 과거의 경험과 검증된 데이터를 바탕으로 현실적인 해결책을 도출하는 ESTJ의 성향을 측정합니다."
+      },
+      {
+        "title": "ESTJ 빙고 챌린지",
+        "url": "/u/tests/test-bingo/",
+        "type": "테스트",
+        "description": "ESTJ 특징으로 구성된 빙고 게임"
+      },
+      {
+        "title": "ESTJ 리더십 원칙 테스트",
+        "url": "/u/tests/test-leadership-principles/",
+        "type": "테스트",
+        "description": "ESTJ가 조직을 이끌 때 명확한 규칙, 위계질서, 그리고 성과에 대한 책임을 얼마나 중요하게 생각하는지 측정합니다."
+      },
+      {
+        "title": "ESTJ 규칙 준수도 테스트",
+        "url": "/u/tests/test-rule-adherence/",
+        "type": "테스트",
+        "description": "ESTJ가 규칙과 원칙을 얼마나 중요하게 생각하고 준수하는지 측정합니다."
+      }
+    ]
+  },
+  {
+    "mainTitle": "게임",
+    "items": [
+      {
+        "title": "전략 경영 시뮬레이션",
+        "url": "/u/tests/game-strategic-management/",
+        "type": "게임",
+        "description": "가상의 기업을 운영하며 생산, 마케팅, 재무 등을 관리하여 시장을 지배하는 게임입니다."
+      },
+      {
+        "title": "자원 최적화 시뮬레이션",
+        "url": "/u/tests/game-resource-optimization/",
+        "type": "게임",
+        "description": "제한된 자원으로 최대의 효율을 내는 시스템을 구축하는, 논리적 사고가 중요한 게임입니다."
+      },
+      {
+        "title": "도시 건설",
+        "url": "/u/tests/game-city-builder/",
+        "type": "게임",
+        "description": "체계적인 계획을 통해 도시의 인프라를 구축하고, 시민들의 만족도를 높이며 도시를 성장시키는 시뮬레이션 게임입니다."
+      },
+      {
+        "title": "규칙 기반 전략 게임",
+        "url": "/u/tests/game-rule-based-strategy/",
+        "type": "게임",
+        "description": "체스나 문명과 같이 명확한 규칙 안에서 상대의 수를 예측하고, 논리적인 판단으로 승리하는 복잡한 보드게임 형식의 게임입니다."
+      },
+      {
+        "title": "프로젝트 매니저 시뮬레이션",
+        "url": "/u/tests/game-project-manager/",
+        "type": "게임",
+        "description": "복잡한 프로젝트의 예산, 시간, 인력을 관리하여 마감 기한 내에 성공적으로 완료하는 게임입니다."
+      },
+      {
+        "title": "물류의 제왕",
+        "url": "/u/tests/game-supply-chain-mogul/",
+        "type": "게임",
+        "description": "글로벌 공급망을 구축하고, 재고를 관리하며, 각종 돌발 상황에 대처하여 물류 시스템을 최적화하는 경영 시뮬레이션 게임입니다."
+      },
+      {
+        "title": "법과 질서",
+        "url": "/u/tests/game-law-and-order/",
+        "type": "게임",
+        "description": "경찰서장이나 판사가 되어, 제한된 자원으로 도시의 법과 질서를 유지하고 범죄율을 관리하는 전략 게임입니다."
+      },
+      {
+        "title": "공장 건축가",
+        "url": "/u/tests/game-factory-architect/",
+        "type": "게임",
+        "description": "Factorio와 같이, 효율적인 생산 라인을 설계하고 자동화하여 복잡한 제품을 생산해내는 논리 기반의 건설 게임입니다."
+      },
+      {
+        "title": "음악 기억력 게임",
+        "url": "/u/tests/game-music-memory/",
+        "type": "게임",
+        "description": "음악 기억력 게임"
+      },
+      {
+        "title": "리듬 마스터 게임",
+        "url": "/u/tests/game-rhythm-master/",
+        "type": "게임",
+        "description": "리듬 마스터 게임"
+      }
+    ]
   }
 ]
