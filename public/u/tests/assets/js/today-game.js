@@ -102,6 +102,15 @@ function loadGameState() {
                 { id: "engineer_lee", name: "이엔지", personality: "꼼꼼한", skill: "건설", trust: 60 }
             ];
         }
+        if (!loaded.cityInfrastructure) {
+            loaded.cityInfrastructure = {
+                warehouse: { built: false, durability: 100, name: "물류창고", description: "도시의 자재를 효율적으로 보관합니다.", effect_description: "자재 및 생산성 증가." },
+                factory: { built: false, durability: 100, name: "공장", description: "다양한 물품을 생산하고 노동력을 활용합니다.", effect_description: "노동력 및 효율 증가." },
+                cityHall: { built: false, durability: 100, name: "시청", description: "도시의 행정을 총괄하고 시민들을 관리합니다.", effect_description: "행정력 및 질서 증가." },
+                planningDept: { built: false, durability: 100, name: "기획부", description: "도시의 미래를 계획하고 전략을 수립합니다.", effect_description: "리더십 및 효율 증가." },
+                researchInstitute: { built: false, durability: 100, name: "연구소", description: "새로운 기술과 정책을 연구하여 도시를 발전시킵니다.", effect_description: "책임감 및 생산성 증가." }
+            };
+        }
         // Ensure new stats are initialized if loading old save
         if (loaded.efficiency === undefined) loaded.efficiency = 50;
         if (loaded.order === undefined) loaded.order = 50;
@@ -293,8 +302,8 @@ const gameScenarios = {
         choices: [
             { text: "예산 징수", action: "collect_budget" },
             { text: "자재 확보", action: "collect_materials" },
-            { text: "노동력 모집", "action": "collect_labor" },
-            { text: "취소", "action": "return_to_intro" }
+            { text: "노동력 모집", action: "collect_labor" },
+            { text: "취소", action: "return_to_intro" }
         ]
     },
     "action_infrastructure_management": {
@@ -329,7 +338,7 @@ const gameScenarios = {
 
 const auditBudgetOutcomes = [
     {
-        condition: (gs) => gs.efficiency < 40,
+        condition: (gs) => gs.energy < 40,
         weight: 40,
         effect: (gs) => {
             const efficiencyLoss = getRandomValue(10, 4);
@@ -527,7 +536,7 @@ const reportToCitizensOutcomes = [
             const trustLoss = getRandomValue(10, 3);
             const efficiencyLoss = getRandomValue(5, 2);
             const leadershipLoss = getRandomValue(5, 2);
-            const updatedCitizens = gs.citizens.map(c => c.id === citizen.id ? { ...c, trust: Math.max(0, c.trust - trustLoss) } : c);
+            const updatedCitizens = gs.citizens.map(c => c.id === citizen.id ? { ...c, trust: Math.min(100, c.trust + trustLoss) } : c);
             return {
                 changes: { citizens: updatedCitizens, efficiency: gs.efficiency - efficiencyLoss, leadership: gs.leadership - leadershipLoss },
                 message: `${citizen.name}${getWaGwaParticle(citizen.name)} 보고 중 오해를 사서 신뢰도와 효율성, 당신의 리더십이 감소했습니다. (-${trustLoss} ${citizen.name} 신뢰도, -${efficiencyLoss} 효율, -${leadershipLoss} 리더십)`
@@ -567,8 +576,6 @@ function calculateMinigameReward(minigameName, score) {
             } else if (score >= 0) {
                 rewards.efficiency = 5;
                 rewards.message = `보고서 핵심 내용 맞추기를 완료했습니다. (+5 효율)`;
-            } else {
-                rewards.message = `보고서 핵심 내용 맞추기를 완료했지만, 아쉽게도 보상은 없습니다.`;
             }
             break;
         case "예산 분배 시뮬레이션": // Placeholder for now, but re-themed
@@ -702,7 +709,7 @@ const minigames = [
             gameArea.innerHTML = `<p>${minigames[1].description}</p><p>게임을 시작합니다!</p>`;
             choicesDiv.innerHTML = `<button class="choice-btn" onclick="minigames[1].processAction('endGame')">게임 종료</button>`;
         },
-        render: () {},
+        render: function() {},
         processAction: (actionType) => {
             if (actionType === 'endGame') {
                 minigames[1].end();
@@ -726,7 +733,7 @@ const minigames = [
             gameArea.innerHTML = `<p>${minigames[2].description}</p><p>게임을 시작합니다!</p>`;
             choicesDiv.innerHTML = `<button class="choice-btn" onclick="minigames[2].processAction('endGame')">게임 종료</button>`;
         },
-        render: () {},
+        render: function() {},
         processAction: (actionType) => {
             if (actionType === 'endGame') {
                 minigames[2].end();
@@ -750,7 +757,7 @@ const minigames = [
             gameArea.innerHTML = `<p>${minigames[3].description}</p><p>게임을 시작합니다!</p>`;
             choicesDiv.innerHTML = `<button class="choice-btn" onclick="minigames[3].processAction('endGame')">게임 종료</button>`;
         },
-        render: () {},
+        render: function() {},
         processAction: (actionType) => {
             if (actionType === 'endGame') {
                 minigames[3].end();
@@ -774,7 +781,7 @@ const minigames = [
             gameArea.innerHTML = `<p>${minigames[4].description}</p><p>게임을 시작합니다!</p>`;
             choicesDiv.innerHTML = `<button class="choice-btn" onclick="minigames[4].processAction('endGame')">게임 종료</button>`;
         },
-        render: () {},
+        render: function() {},
         processAction: (actionType) => {
             if (actionType === 'endGame') {
                 minigames[4].end();
@@ -1007,7 +1014,7 @@ const gameActions = {
         const efficiencyLoss = getRandomValue(10, 3);
         const orderLoss = getRandomValue(5, 2);
         const productivityLoss = getRandomValue(5, 2);
-        message = `새로운 시민의 영입을 거절했습니다. 도시의 효율과 질서, 생산성이 감소합니다. (-${efficiencyLoss} 효율, -${orderLoss} 질서, -${productivityLoss} 생산성)`;
+        const message = `새로운 시민의 영입을 거절했습니다. 도시의 효율과 질서, 생산성이 감소합니다. (-${efficiencyLoss} 효율, -${orderLoss} 질서, -${productivityLoss} 생산성)`;
         updateState({ efficiency: gameState.efficiency - efficiencyLoss, order: gameState.order - orderLoss, productivity: gameState.productivity - productivityLoss, pendingNewCitizen: null, currentScenarioId: 'intro' }, message);
     },
     accept_investment: () => {
