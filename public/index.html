@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESTJ — estj.kr</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* Navy — authority, tradition */
+      --color-navy-50:  #f0f3f8;
+      --color-navy-100: #d9e1ef;
+      --color-navy-200: #b3c4de;
+      --color-navy-300: #7d9dc5;
+      --color-navy-400: #4d79ad;
+      --color-navy-500: #2d5c94;
+      --color-navy-600: #1e4678;
+      --color-navy-700: #153562;
+      --color-navy-800: #0e2448;
+      --color-navy-900: #081630;
+      --color-navy-950: #04091c;
+
+      /* Gold — command, achievement */
+      --color-gold-200: #faedb8;
+      --color-gold-300: #f5d98a;
+      --color-gold-400: #e8c245;
+      --color-gold-500: #c9a227;
+      --color-gold-600: #a07c10;
+
+      /* Stone — structure, solidity */
+      --color-stone-300: #d4cfc6;
+      --color-stone-400: #b0a898;
+      --color-stone-500: #8a8070;
+      --color-stone-600: #665e50;
+      --color-stone-700: #4a4438;
+      --color-stone-800: #312d25;
+      --color-stone-900: #1e1b15;
+      --color-stone-950: #12100c;
+
+      /* Crimson — decisive action */
+      --color-command-400: #c84040;
+      --color-command-500: #a82828;
+
+      --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
+      --font-serif:   "Playfair Display", Georgia, serif;
+      --font-body:    "DM Sans", system-ui, sans-serif;
+    }
+
+    @layer base {
+      *, *::before, *::after { box-sizing: border-box; }
+      html {
+        scroll-behavior: smooth;
+        background-color: var(--color-navy-950);
+        color: var(--color-navy-100);
+      }
+      body {
+        font-family: var(--font-body);
+        font-weight: 300;
+        overflow-x: hidden;
+      }
+      ::selection {
+        background-color: var(--color-gold-500);
+        color: var(--color-navy-950);
+      }
+      ::-webkit-scrollbar { width: 3px; }
+      ::-webkit-scrollbar-track { background: var(--color-navy-950); }
+      ::-webkit-scrollbar-thumb { background: rgba(200, 162, 39, 0.45); }
+    }
+
+    /* ── Canvas & Overlays ── */
+    #order-canvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .grid-overlay {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image:
+        linear-gradient(rgba(45, 92, 148, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 92, 148, 0.07) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .vignette {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(ellipse at center, transparent 38%, rgba(4, 9, 28, 0.88) 100%);
+    }
+
+    /* ── Site Wrapper ── */
+    .site-wrapper {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .glass-header {
+      position: sticky; top: 0;
+      backdrop-filter: blur(20px) saturate(1.5);
+      background: rgba(4, 9, 28, 0.78);
+      border-bottom: 1px solid rgba(200, 162, 39, 0.14);
+      z-index: 100;
+    }
+
+    .logo-estj {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      letter-spacing: 0.3em;
+      color: var(--color-gold-400);
+      text-decoration: none;
+      position: relative;
+    }
+    .logo-estj::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, var(--color-gold-400), transparent);
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-navy-300);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .nav-link:hover {
+      color: var(--color-gold-400);
+      border-bottom-color: var(--color-gold-400);
+    }
+
+    .domain-badge {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-navy-400);
+      border: 1px solid rgba(45, 92, 148, 0.28);
+      padding: 3px 10px;
+    }
+
+    /* ── Hero ── */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-size: clamp(18vw, 28vw, 40vw);
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(200, 162, 39, 0.07);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      letter-spacing: 0.06em;
+    }
+
+    /* Architectural column lines */
+    .column-lines {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .column-lines::before,
+    .column-lines::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom,
+        transparent,
+        rgba(200, 162, 39, 0.18) 25%,
+        rgba(200, 162, 39, 0.18) 75%,
+        transparent);
+    }
+    .column-lines::before { left: 22%; }
+    .column-lines::after  { right: 22%; }
+
+    /* Top cap for column lines */
+    .column-cap {
+      position: absolute;
+      pointer-events: none;
+      overflow: hidden;
+      inset: 0;
+    }
+    .column-cap::before,
+    .column-cap::after {
+      content: '';
+      position: absolute;
+      top: 5rem;
+      width: 40px; height: 1px;
+      background: rgba(200, 162, 39, 0.25);
+    }
+    .column-cap::before { left: calc(22% - 20px); }
+    .column-cap::after  { right: calc(22% - 20px); }
+
+    .executive-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.63rem;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--color-gold-400);
+      border: 1px solid rgba(200, 162, 39, 0.4);
+      padding: 5px 16px;
+      margin-bottom: 2.8rem;
+      position: relative;
+    }
+    .executive-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--color-gold-400);
+      border-radius: 50%;
+      animation: badge-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes badge-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.35; transform: scale(0.65); }
+    }
+
+    .logo-display {
+      font-family: var(--font-display);
+      font-size: clamp(5.5rem, 16vw, 14rem);
+      line-height: 1;
+      letter-spacing: 0.18em;
+      color: var(--color-gold-400);
+      position: relative;
+      animation: march-in 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    /* Subtle gold underline beneath logo */
+    .logo-display::after {
+      content: '';
+      display: block;
+      width: 60%;
+      height: 2px;
+      margin: 0.5rem auto 0;
+      background: linear-gradient(90deg, transparent, var(--color-gold-500), transparent);
+    }
+    @keyframes march-in {
+      from { opacity: 0; transform: translateY(36px) scaleY(0.9); }
+      to   { opacity: 1; transform: translateY(0) scaleY(1); }
+    }
+
+    .hero-tagline {
+      font-family: var(--font-serif);
+      font-size: clamp(1rem, 2.6vw, 1.6rem);
+      font-weight: 400;
+      color: var(--color-navy-200);
+      letter-spacing: 0.06em;
+      margin-top: 1.6rem;
+      animation: fade-up 1s 0.3s both;
+    }
+
+    .divider-line-h {
+      width: clamp(60px, 14vw, 110px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-gold-500), transparent);
+      margin: 2rem auto;
+      animation: fade-up 1s 0.5s both;
+    }
+
+    .hero-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(0.88rem, 1.75vw, 1.05rem);
+      color: var(--color-navy-400);
+      max-width: 480px;
+      line-height: 1.85;
+      animation: fade-up 1s 0.6s both;
+    }
+
+    .trait-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 4px 13px;
+      border: 1px solid rgba(200, 162, 39, 0.2);
+      color: var(--color-navy-300);
+      transition: all 0.25s;
+      cursor: default;
+    }
+    .trait-pill:hover {
+      color: var(--color-gold-400);
+      border-color: rgba(200, 162, 39, 0.6);
+      background: rgba(200, 162, 39, 0.05);
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-navy-950);
+      background: var(--color-gold-400);
+      padding: 15px 42px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+    .cta-btn::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: translateX(-120%);
+      transition: transform 0.55s;
+    }
+    .cta-btn:hover::after { transform: translateX(120%); }
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(200, 162, 39, 0.4);
+    }
+
+    .scroll-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4.5rem;
+      animation: fade-up 1s 1.2s both;
+    }
+    .scroll-label {
+      font-family: var(--font-body);
+      font-size: 0.58rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--color-navy-600);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 52px;
+      background: linear-gradient(to bottom, var(--color-gold-500), transparent);
+      animation: scroll-drop 2.2s ease-in-out infinite;
+    }
+    @keyframes scroll-drop {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid rgba(200, 162, 39, 0.1);
+      border-bottom: 1px solid rgba(200, 162, 39, 0.1);
+    }
+    .stat-cell {
+      padding: 2.8rem 2rem;
+      text-align: center;
+      border-right: 1px solid rgba(200, 162, 39, 0.1);
+      transition: background 0.3s;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell:hover { background: rgba(200, 162, 39, 0.04); }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      color: var(--color-gold-400);
+      letter-spacing: 0.1em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-navy-500);
+      margin-top: 7px;
+    }
+
+    /* ── Letter Blocks ── */
+    .letters-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(200, 162, 39, 0.1);
+    }
+    .letter-block {
+      padding: 3.5rem 1.5rem;
+      border-right: 1px solid rgba(200, 162, 39, 0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .letter-block:last-child { border-right: none; }
+    .letter-block::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .letter-block:hover::before { transform: scaleX(1); }
+    .letter-block:hover { background: rgba(200, 162, 39, 0.03); }
+
+    .l-e::before { background: linear-gradient(90deg, var(--color-gold-400), var(--color-gold-200)); }
+    .l-s::before { background: linear-gradient(90deg, var(--color-navy-400), var(--color-navy-200)); }
+    .l-t::before { background: linear-gradient(90deg, var(--color-stone-400), var(--color-stone-300)); }
+    .l-j::before { background: linear-gradient(90deg, var(--color-command-400), #ff8080); }
+
+    .letter-char {
+      font-family: var(--font-display);
+      font-size: clamp(3.8rem, 8.5vw, 6.5rem);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+    .l-e .letter-char { color: var(--color-gold-400); }
+    .l-s .letter-char { color: var(--color-navy-300); }
+    .l-t .letter-char { color: var(--color-stone-300); }
+    .l-j .letter-char { color: var(--color-command-400); }
+
+    .letter-word {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-navy-500);
+      margin-top: 7px;
+    }
+    .letter-desc {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--color-navy-400);
+      margin-top: 9px;
+      line-height: 1.55;
+    }
+
+    /* ── Section Shared ── */
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      letter-spacing: 0.12em;
+      color: var(--color-navy-100);
+      line-height: 1.1;
+    }
+
+    /* ── Command Grid (Feature Cards) ── */
+    .command-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: rgba(200, 162, 39, 0.08);
+    }
+    .command-card {
+      background: var(--color-navy-950);
+      padding: 3.2rem 2.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .command-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.45s ease;
+    }
+    .command-card:hover { background: rgba(200, 162, 39, 0.035); }
+    .command-card:hover::after { transform: scaleX(1); }
+
+    .card-gold::after  { background: linear-gradient(90deg, var(--color-gold-400), transparent); }
+    .card-navy::after  { background: linear-gradient(90deg, var(--color-navy-300), transparent); }
+    .card-stone::after { background: linear-gradient(90deg, var(--color-stone-300), transparent); }
+
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1.6rem;
+      display: block;
+      filter: grayscale(0.2);
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      letter-spacing: 0.14em;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .card-gold  .card-title { color: var(--color-gold-400); }
+    .card-navy  .card-title { color: var(--color-navy-300); }
+    .card-stone .card-title { color: var(--color-stone-300); }
+
+    .card-desc {
+      font-family: var(--font-body);
+      font-size: 0.87rem;
+      line-height: 1.78;
+      color: var(--color-navy-400);
+      font-weight: 300;
+    }
+
+    /* ── Pillars Box ── */
+    .pillars-box {
+      border: 1px solid rgba(200, 162, 39, 0.18);
+      padding: 3.5rem;
+      position: relative;
+    }
+    .pillars-box-label {
+      position: absolute; top: -0.68rem; left: 2.5rem;
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      background: var(--color-navy-950);
+      padding: 0 8px;
+    }
+
+    .pillar-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.6rem;
+      padding: 1.3rem 0;
+      border-bottom: 1px solid rgba(200, 162, 39, 0.07);
+    }
+    .pillar-row:last-child { border-bottom: none; }
+
+    .pillar-num {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      letter-spacing: 0.1em;
+      color: var(--color-gold-500);
+      opacity: 0.45;
+      min-width: 2.5rem;
+      line-height: 1;
+      padding-top: 2px;
+    }
+    .pillar-name {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-navy-200);
+      margin-bottom: 4px;
+    }
+    .pillar-text {
+      font-family: var(--font-body);
+      font-size: 0.84rem;
+      line-height: 1.72;
+      color: var(--color-navy-500);
+      font-weight: 300;
+    }
+
+    /* ── Origin / Contact ── */
+    .origin-text {
+      font-family: var(--font-serif);
+      font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+      line-height: 2;
+      color: var(--color-navy-400);
+      font-weight: 400;
+    }
+    .origin-text em {
+      font-style: italic;
+      color: var(--color-gold-400);
+    }
+
+    .contact-link {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 3.2vw, 2.4rem);
+      letter-spacing: 0.16em;
+      color: var(--color-gold-400);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200, 162, 39, 0.28);
+      padding-bottom: 4px;
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .contact-link:hover {
+      color: var(--color-gold-300);
+      border-bottom-color: rgba(200, 162, 39, 0.7);
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      padding: 2.5rem 3rem;
+      border-top: 1px solid rgba(200, 162, 39, 0.09);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-copy {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--color-navy-600);
+    }
+
+    /* ── Animations ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fade-up 0.9s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.25s; }
+    .delay-3 { animation-delay: 0.4s; }
+    .delay-4 { animation-delay: 0.55s; }
+    .delay-5 { animation-delay: 0.7s; }
+    .delay-6 { animation-delay: 0.9s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .letters-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-row    { grid-template-columns: repeat(3, 1fr); }
+      .pillars-box  { padding: 2rem 1.5rem; }
+      .site-footer  { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="order-canvas"></canvas>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="site-wrapper">
+
+    <!-- ══════════════ HEADER ══════════════ -->
+    <header class="glass-header flex items-center justify-between px-8 py-5">
+      <a href="/" class="logo-estj">ESTJ</a>
+      <nav class="hidden sm:flex gap-10">
+        <a href="#letters" class="nav-link">Letters</a>
+        <a href="#command" class="nav-link">Command</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+      <div class="domain-badge hidden sm:block">estj.kr</div>
+    </header>
+
+    <main>
+
+      <!-- ══════════════ HERO ══════════════ -->
+      <section class="hero-section">
+        <div class="hero-bg-text" aria-hidden="true">ESTJ</div>
+        <div class="column-lines" aria-hidden="true"></div>
+        <div class="column-cap" aria-hidden="true"></div>
+
+        <div class="executive-badge fade-up">The Executive</div>
+
+        <h1 class="logo-display">ESTJ</h1>
+
+        <p class="hero-tagline fade-up delay-2">질서를 세우고, 세상을 이끈다</p>
+
+        <div class="divider-line-h"></div>
+
+        <p class="hero-quote fade-up delay-3">
+          "Rules are not chains —<br />
+          they are the architecture<br />
+          upon which empires are built."
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-3 mt-10 fade-up delay-4">
+          <span class="trait-pill">🏛️ Structured</span>
+          <span class="trait-pill">⚡ Decisive</span>
+          <span class="trait-pill">📐 Disciplined</span>
+          <span class="trait-pill">🎯 Goal-Driven</span>
+          <span class="trait-pill">🔱 Reliable</span>
+        </div>
+
+        <div class="mt-12 fade-up delay-5">
+          <a href="#command" class="cta-btn">Enter Command &#8594;</a>
+        </div>
+
+        <div class="scroll-indicator">
+          <span class="scroll-label">scroll</span>
+          <div class="scroll-line"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════ STATS ══════════════ -->
+      <div class="stats-row">
+        <div class="stat-cell fade-up delay-1">
+          <div class="stat-number">9%</div>
+          <div class="stat-label">Of Population</div>
+        </div>
+        <div class="stat-cell fade-up delay-2">
+          <div class="stat-number">Te</div>
+          <div class="stat-label">Dominant Function</div>
+        </div>
+        <div class="stat-cell fade-up delay-3">
+          <div class="stat-number">#2</div>
+          <div class="stat-label">Most Common in Men</div>
+        </div>
+      </div>
+
+      <!-- ══════════════ LETTERS ══════════════ -->
+      <section id="letters">
+        <div class="letters-grid">
+          <div class="letter-block l-e">
+            <div class="letter-char">E</div>
+            <div class="letter-word">Extraverted</div>
+            <div class="letter-desc">외부 세계에서<br />에너지를 얻는다</div>
+          </div>
+          <div class="letter-block l-s">
+            <div class="letter-char">S</div>
+            <div class="letter-word">Sensing</div>
+            <div class="letter-desc">현실과 사실에<br />집중하는 감각</div>
+          </div>
+          <div class="letter-block l-t">
+            <div class="letter-char">T</div>
+            <div class="letter-word">Thinking</div>
+            <div class="letter-desc">논리와 원칙으로<br />결정을 내린다</div>
+          </div>
+          <div class="letter-block l-j">
+            <div class="letter-char">J</div>
+            <div class="letter-word">Judging</div>
+            <div class="letter-desc">계획과 질서로<br />세상을 통제한다</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ COMMAND SECTION ══════════════ -->
+      <section id="command" class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="mb-16 fade-up">
+          <div class="section-label mb-3">Core Strengths</div>
+          <div class="section-title">The Three Pillars<br />of Command</div>
+        </div>
+
+        <div class="command-grid fade-up delay-2">
+          <div class="command-card card-gold">
+            <span class="card-icon">🏛️</span>
+            <div class="card-title">Order</div>
+            <p class="card-desc">
+              ESTJ는 혼돈 속에서 질서를 창조한다. 모든 것에는 제자리가 있고, 모든 일에는 올바른 방법이 있다는 확고한 신념으로, 주변 환경과 사람들을 체계적으로 조직해 최대 효율을 이끌어낸다. 전통과 규칙은 단순한 제약이 아니라 신뢰할 수 있는 사회를 구성하는 기반이다.
+            </p>
+          </div>
+          <div class="command-card card-navy">
+            <span class="card-icon">⚖️</span>
+            <div class="card-title">Justice</div>
+            <p class="card-desc">
+              옳고 그름에 대한 뚜렷한 기준을 가지며, 그 기준을 일관되게 적용한다. ESTJ는 공정함을 중시하며, 규칙을 어기는 것을 용납하지 않는다. 책임감과 의무감은 그들의 정체성 중심에 있으며, 자신에게도 타인에게도 동일한 기준을 요구한다.
+            </p>
+          </div>
+          <div class="command-card card-stone">
+            <span class="card-icon">🎯</span>
+            <div class="card-title">Execution</div>
+            <p class="card-desc">
+              계획을 세우는 것만큼 실행하는 것을 중시한다. ESTJ는 말보다 행동으로 증명하는 사람이다. 목표가 설정되면 지체 없이 전진하며, 팀을 이끌고 자원을 배분하고 장애물을 제거한다. 결과를 만들어내는 능력이 그들의 가장 강력한 무기다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ PILLARS BOX ══════════════ -->
+      <section class="py-10 px-6 max-w-6xl mx-auto">
+        <div class="pillars-box fade-up">
+          <span class="pillars-box-label">Executive Profile</span>
+          <div class="pillar-row">
+            <div class="pillar-num">01</div>
+            <div class="pillar-content">
+              <div class="pillar-name">Leadership by Structure</div>
+              <div class="pillar-text">
+                ESTJ는 명확한 위계와 역할 분담을 통해 리더십을 발휘한다. 모든 구성원이 자신의 책임을 알고, 그 책임을 다할 때 조직이 가장 강력하게 움직인다고 믿는다. 자연스럽게 지휘관의 자리에 서며, 사람들은 그들의 방향 제시에 신뢰를 보낸다.
+              </div>
+            </div>
+          </div>
+          <div class="pillar-row">
+            <div class="pillar-num">02</div>
+            <div class="pillar-content">
+              <div class="pillar-name">Tradition as Foundation</div>
+              <div class="pillar-text">
+                검증된 방법과 전통적 가치를 존중한다. 새로움을 위한 변화보다는 효과가 입증된 방식을 선호하며, 사회의 안정성과 예측 가능성을 중요하게 여긴다. 과거에서 배운 교훈을 현재에 적용하는 실용적 지혜가 그들을 강하게 한다.
+              </div>
+            </div>
+          </div>
+          <div class="pillar-row">
+            <div class="pillar-num">03</div>
+            <div class="pillar-content">
+              <div class="pillar-name">Decisive Under Pressure</div>
+              <div class="pillar-text">
+                결정이 필요한 순간, ESTJ는 망설이지 않는다. 빠르게 사실을 분석하고, 논리적 결론에 도달하며, 즉각 행동으로 옮긴다. 불확실성 속에서도 명확한 방향을 제시할 수 있는 능력이 그들을 위기 상황에서 더욱 빛나게 한다.
+              </div>
+            </div>
+          </div>
+          <div class="pillar-row">
+            <div class="pillar-num">04</div>
+            <div class="pillar-content">
+              <div class="pillar-name">Commitment to Community</div>
+              <div class="pillar-text">
+                개인의 성공을 넘어 공동체의 번영을 추구한다. ESTJ는 가족, 조직, 사회에 대한 깊은 책임감을 갖고 있으며, 자신이 속한 집단이 올바르게 기능하도록 끊임없이 노력한다. 사회적 규범과 시민적 의무를 중요한 가치로 여긴다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ ORIGIN ══════════════ -->
+      <section class="py-20 px-6 max-w-4xl mx-auto text-center">
+        <div class="section-label mb-6 fade-up">About</div>
+        <p class="origin-text fade-up delay-1">
+          <em>ESTJ</em>는 Myers-Briggs 16가지 성격 유형 중 하나로,
+          전체 인구의 약 <em>9%</em>를 차지한다. 특히 남성 중에서는 두 번째로 흔한 유형으로,
+          <em>Executive</em> 혹은 <em>Commander</em>라 불린다.
+          외향적(E), 감각적(S), 사고적(T), 판단적(J)의 네 축이 만들어내는 성격은
+          조직적이고 실용적이며 단호한 리더의 전형이다.
+          ESTJ는 세상이 <em>질서</em>와 <em>책임</em> 위에 세워져야 한다고 믿으며,
+          그 믿음을 행동으로 증명하는 사람들이다.
+        </p>
+      </section>
+
+      <!-- ══════════════ CONTACT ══════════════ -->
+      <section id="contact" class="py-24 px-6 text-center border-t border-gold-900"
+        style="border-color: rgba(200,162,39,0.1);">
+        <div class="section-label mb-6 fade-up">Contact</div>
+        <div class="section-title mb-10 fade-up delay-1">Get in Touch</div>
+        <a href="mailto:hello@estj.kr" class="contact-link fade-up delay-2">
+          hello@estj.kr
+        </a>
+        <p class="mt-8 fade-up delay-3"
+          style="font-family: var(--font-body); font-size: 0.78rem;
+                 letter-spacing: 0.15em; color: var(--color-navy-600); text-transform: uppercase;">
+          Direct. Clear. No-nonsense.
+        </p>
+      </section>
+
+    </main>
+
+    <!-- ══════════════ FOOTER ══════════════ -->
+    <footer class="site-footer">
+      <span class="footer-copy">© 2026 estj.kr — All rights reserved.</span>
+      <span class="footer-copy" style="opacity: 0.5;">
+        order · discipline · execution · leadership
+      </span>
+    </footer>
+
+  </div><!-- /site-wrapper -->
+
+  <!-- ══════════════ PARTICLE SCRIPT ══════════════ -->
+  <script>
+    (() => {
+      const canvas = document.getElementById('order-canvas');
+      const ctx    = canvas.getContext('2d');
+
+      // ─── Palette ───
+      const GOLD   = 'rgba(232, 194, 69,';
+      const NAVY   = 'rgba(45,  92, 148,';
+      const STONE  = 'rgba(176, 168, 152,';
+      const WHITE  = 'rgba(217, 225, 239,';
+
+      let W, H;
+      const resize = () => {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      };
+      window.addEventListener('resize', resize);
+      resize();
+
+      // ═══ 1. GridNode — architectural grid intersection dots ═══
+      class GridNode {
+        constructor() { this.reset(true); }
+        reset(init = false) {
+          this.gridSize = 64;
+          this.col = Math.floor(Math.random() * Math.ceil(W / this.gridSize));
+          this.row = Math.floor(Math.random() * Math.ceil(H / this.gridSize));
+          this.x   = this.col * this.gridSize;
+          this.y   = this.row * this.gridSize;
+          this.r   = Math.random() * 1.2 + 0.4;
+          this.life    = 0;
+          this.maxLife = Math.random() * 180 + 120;
+          this.delay   = init ? Math.random() * this.maxLife : 0;
+          this.color   = Math.random() < 0.6 ? GOLD : NAVY;
+        }
+        update() {
+          this.life++;
+          if (this.delay > 0) { this.delay--; return; }
+          if (this.life > this.maxLife) this.reset();
+        }
+        draw() {
+          if (this.delay > 0) return;
+          const t   = this.life / this.maxLife;
+          const a   = t < 0.15 ? t / 0.15 : t > 0.85 ? (1 - t) / 0.15 : 1;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = this.color + (a * 0.55) + ')';
+          ctx.fill();
+        }
+      }
+
+      // ═══ 2. OrderLine — horizontal / vertical structural lines ═══
+      class OrderLine {
+        constructor() { this.reset(true); }
+        reset(init = false) {
+          this.isH     = Math.random() < 0.5; // horizontal or vertical
+          this.gridSize = 64;
+          if (this.isH) {
+            this.row  = Math.floor(Math.random() * Math.ceil(H / this.gridSize));
+            this.y    = this.row * this.gridSize;
+            this.x    = -80;
+            this.endX = W + 80;
+            this.len  = W + 160;
+          } else {
+            this.col  = Math.floor(Math.random() * Math.ceil(W / this.gridSize));
+            this.x    = this.col * this.gridSize;
+            this.y    = -80;
+            this.endY = H + 80;
+            this.len  = H + 160;
+          }
+          this.progress = init ? Math.random() : 0;
+          this.speed    = Math.random() * 0.0018 + 0.0006;
+          this.life     = 0;
+          this.maxLife  = Math.floor(1 / this.speed);
+          this.color    = Math.random() < 0.55 ? GOLD : (Math.random() < 0.5 ? NAVY : STONE);
+          this.width    = Math.random() * 0.6 + 0.2;
+          this.delay    = init ? 0 : Math.floor(Math.random() * 200);
+        }
+        update() {
+          if (this.delay > 0) { this.delay--; return; }
+          this.progress += this.speed;
+          if (this.progress >= 1) this.reset();
+        }
+        draw() {
+          if (this.delay > 0 || this.progress <= 0) return;
+          const t = this.progress;
+          const alpha = t < 0.1 ? t / 0.1 : t > 0.9 ? (1 - t) / 0.1 : 1;
+          ctx.beginPath();
+          ctx.lineWidth   = this.width;
+          ctx.strokeStyle = this.color + (alpha * 0.3) + ')';
+          if (this.isH) {
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + this.len * t, this.y);
+          } else {
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x, this.y + this.len * t);
+          }
+          ctx.stroke();
+        }
+      }
+
+      // ═══ 3. GoldMote — floating gold dust particles ═══
+      class GoldMote {
+        constructor() { this.reset(true); }
+        reset(init = false) {
+          this.x    = Math.random() * W;
+          this.y    = init ? Math.random() * H : H + 10;
+          this.r    = Math.random() * 1.5 + 0.3;
+          this.vy   = -(Math.random() * 0.35 + 0.08);
+          this.vx   = (Math.random() - 0.5) * 0.15;
+          this.life    = 0;
+          this.maxLife = Math.random() * 300 + 200;
+          this.color   = Math.random() < 0.7 ? GOLD : WHITE;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.life++;
+          if (this.life > this.maxLife || this.y < -10) this.reset();
+        }
+        draw() {
+          const t = this.life / this.maxLife;
+          const a = t < 0.12 ? t / 0.12 : t > 0.88 ? (1 - t) / 0.12 : 1;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = this.color + (a * 0.5) + ')';
+          ctx.fill();
+        }
+      }
+
+      // ═══ 4. CornerBracket — architectural corner flourishes ═══
+      class CornerBracket {
+        constructor() { this.reset(true); }
+        reset(init = false) {
+          this.gridSize = 64;
+          this.col  = Math.floor(Math.random() * Math.ceil(W / this.gridSize));
+          this.row  = Math.floor(Math.random() * Math.ceil(H / this.gridSize));
+          this.x    = this.col * this.gridSize;
+          this.y    = this.row * this.gridSize;
+          this.size = Math.random() * 6 + 4;
+          this.life    = 0;
+          this.maxLife = Math.random() * 250 + 150;
+          this.delay   = init ? Math.floor(Math.random() * 200) : Math.floor(Math.random() * 100);
+          this.rot     = Math.floor(Math.random() * 4) * (Math.PI / 2);
+        }
+        update() {
+          if (this.delay > 0) { this.delay--; return; }
+          this.life++;
+          if (this.life > this.maxLife) this.reset();
+        }
+        draw() {
+          if (this.delay > 0) return;
+          const t = this.life / this.maxLife;
+          const a = t < 0.15 ? t / 0.15 : t > 0.85 ? (1 - t) / 0.15 : 1;
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.rot);
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size);
+          ctx.lineTo(0, 0);
+          ctx.lineTo(this.size, 0);
+          ctx.strokeStyle = GOLD + (a * 0.4) + ')';
+          ctx.lineWidth   = 0.8;
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      // ── Instantiate pools ──
+      const nodes    = Array.from({ length: 55 }, () => new GridNode());
+      const lines    = Array.from({ length: 20 }, () => new OrderLine());
+      const motes    = Array.from({ length: 38 }, () => new GoldMote());
+      const brackets = Array.from({ length: 30 }, () => new CornerBracket());
+
+      // ── Animation loop ──
+      const loop = () => {
+        ctx.clearRect(0, 0, W, H);
+
+        lines.forEach(p    => { p.update(); p.draw(); });
+        nodes.forEach(p    => { p.update(); p.draw(); });
+        brackets.forEach(p => { p.update(); p.draw(); });
+        motes.forEach(p    => { p.update(); p.draw(); });
+
+        requestAnimationFrame(loop);
+      };
+      loop();
+    })();
+  </script>
+
+</body>
+</html>
