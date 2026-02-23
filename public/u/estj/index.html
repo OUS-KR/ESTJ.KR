@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESTJ — estj.kr</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-exec-50:   #fdf2f2;
+      --color-exec-100:  #fce4e4;
+      --color-exec-200:  #f9cccc;
+      --color-exec-300:  #f4a4a4;
+      --color-exec-400:  #ec6d6d;
+      --color-exec-500:  #df3b3b;
+      --color-exec-600:  #c42424;
+      --color-exec-700:  #a31c1c;
+      --color-exec-800:  #881c1c;
+      --color-exec-900:  #701c1c;
+      --color-exec-950:  #3d0b0b;
+
+      --color-platinum-300: #e8eaed;
+      --color-platinum-400: #cbd0d6;
+      --color-platinum-500: #9aa3ad;
+
+      --color-gold-300:  #fde68a;
+      --color-gold-400:  #fbbf24;
+      --color-gold-500:  #d97706;
+
+      --color-command-400: #60a5fa;
+      --color-command-500: #3b82f6;
+
+      --color-verdict-400: #4ade80;
+      --color-verdict-500: #22c55e;
+
+      --color-void-900:  #080608;
+      --color-void-950:  #050405;
+
+      --font-serif:      "DM Serif Display", "Noto Serif KR", serif;
+      --font-serif-kr:   "Noto Serif KR", serif;
+      --font-sans:       "Inter", sans-serif;
+    }
+  </style>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #080608;
+      color: #e8eaed;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Herringbone / executive weave texture ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          60deg,
+          rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px,
+          transparent 1px, transparent 10px
+        ),
+        repeating-linear-gradient(
+          -60deg,
+          rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px,
+          transparent 1px, transparent 10px
+        );
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Grain ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.030'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Particle layer ── */
+    #particle-layer {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1; overflow: hidden;
+    }
+    .particle {
+      position: absolute; opacity: 0;
+      animation: rise var(--dur,11s) ease-in-out infinite;
+      animation-delay: var(--delay,0s);
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0) scale(0.6);   opacity: 0; }
+      14%  { opacity: var(--mop,0.40); }
+      86%  { opacity: var(--mop,0.20); }
+      100% { transform: translateY(var(--ty,-100px)) translateX(var(--tx,15px)) scale(1); opacity: 0; }
+    }
+
+    /* ── Executive crimson radial ── */
+    .exec-vignette {
+      position: fixed; top: 0; left: 0; right: 0; height: 55vh;
+      background: radial-gradient(ellipse 72% 44% at 50% 0%,
+        rgba(196,36,36,0.18) 0%,
+        rgba(136,28,28,0.09) 38%,
+        transparent 70%);
+      pointer-events: none; z-index: 1;
+    }
+
+    /* ── Command stripe — top ── */
+    .command-stripe {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg,
+        #a31c1c 0%, #df3b3b 25%, #fbbf24 50%, #df3b3b 75%, #a31c1c 100%);
+      z-index: 20;
+    }
+
+    /* ── Shimmer — crimson-gold ── */
+    .shimmer-text {
+      background: linear-gradient(90deg,
+        #df3b3b 0%, #fbbf24 20%, #e8eaed 40%, #c42424 60%, #fbbf24 80%, #df3b3b 100%);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 6s linear infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    /* ── Cards ── */
+    .estj-card {
+      background: rgba(255,255,255,0.030);
+      border: 1px solid rgba(196,36,36,0.16);
+      border-radius: 12px;
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+    .estj-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 38px rgba(196,36,36,0.16);
+      border-color: rgba(251,191,36,0.28);
+    }
+
+    /* ── Link buttons ── */
+    .link-btn {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 13px 18px; border-radius: 10px;
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(196,36,36,0.16);
+      color: #e8eaed; text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem; font-weight: 500;
+      transition: all 0.22s ease; cursor: pointer;
+    }
+    .link-btn:hover {
+      background: rgba(196,36,36,0.12);
+      border-color: rgba(251,191,36,0.34);
+      transform: translateX(5px);
+      box-shadow: 0 0 18px rgba(196,36,36,0.16);
+    }
+    .link-btn .btn-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+
+    /* ── Avatar ── */
+    .avatar-wrap { position: relative; display: inline-block; }
+    .avatar-ring {
+      position: absolute; inset: -5px; border-radius: 50%;
+      background: conic-gradient(#c42424,#fbbf24,#df3b3b,#e8eaed,#c42424);
+      animation: spin-ring 7s linear infinite; z-index: -1;
+    }
+    @keyframes spin-ring { to { transform: rotate(360deg); } }
+    .avatar-img {
+      width: 92px; height: 92px; border-radius: 50%;
+      border: 3px solid #080608;
+      position: relative; z-index: 1; display: block;
+    }
+    .status-dot {
+      width: 14px; height: 14px; background: #fbbf24;
+      border-radius: 50%; border: 3px solid #080608;
+      position: absolute; bottom: 4px; right: 4px; z-index: 2;
+      animation: pulse-dot 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.65); }
+      50%      { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Progress bars ── */
+    .bar-track {
+      height: 5px; background: rgba(255,255,255,0.07);
+      border-radius: 0; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; width: 0%;
+      transition: width 1.5s cubic-bezier(.25,.46,.45,.94);
+    }
+
+    /* ── KPI stat boxes ── */
+    .kpi-box {
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(196,36,36,0.18);
+      border-top: 2px solid;
+      border-radius: 8px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    /* ── Org chart node ── */
+    .org-node {
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(196,36,36,0.20);
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* ── Carousel ── */
+    .carousel-wrap { position: relative; overflow: hidden; border-radius: 12px; }
+    .carousel-track { display: flex; transition: transform 0.44s ease; }
+    .carousel-slide { min-width: 100%; position: relative; }
+    .carousel-slide img { width: 100%; height: 234px; object-fit: cover; display: block; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px;
+      background: rgba(8,6,8,0.65);
+      border: 1px solid rgba(196,36,36,0.38);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #e8eaed; font-size: 0.95rem;
+      transition: background 0.2s; z-index: 10;
+    }
+    .carousel-btn:hover { background: rgba(196,36,36,0.35); }
+    .carousel-prev { left: 10px; }
+    .carousel-next { right: 10px; }
+    .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+    .carousel-dot {
+      width: 7px; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.18); cursor: pointer;
+      transition: background 0.2s, width 0.2s;
+    }
+    .carousel-dot.active { background: #df3b3b; width: 20px; }
+
+    /* ── Music player ── */
+    .vinyl {
+      width: 70px; height: 70px; border-radius: 50%;
+      background: conic-gradient(
+        #130303 0deg 30deg,  #220808 30deg 60deg,
+        #130303 60deg 90deg, #220808 90deg 120deg,
+        #130303 120deg 150deg,#220808 150deg 180deg,
+        #130303 180deg 210deg,#220808 210deg 240deg,
+        #130303 240deg 270deg,#220808 270deg 300deg,
+        #130303 300deg 330deg,#220808 330deg 360deg);
+      box-shadow: 0 0 0 7px #080608, 0 0 0 9px rgba(196,36,36,0.22);
+      position: relative; flex-shrink: 0;
+    }
+    .vinyl::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #df3b3b; box-shadow: 0 0 10px rgba(223,59,59,0.8);
+    }
+    .vinyl-spin { animation: spin 4s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .progress-bar-wrap { height: 4px; background: rgba(255,255,255,0.09); border-radius: 0; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg,#c42424,#fbbf24); width: 0%; }
+    .progress-anim { animation: pgrow 180s linear forwards; }
+    @keyframes pgrow { from { width:0%; } to { width:100%; } }
+
+    /* ── Tags ── */
+    .tag-pill {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 2px;
+      font-size: 0.68rem; font-weight: 600; border: 1px solid;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    /* ── FAQ ── */
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] summary .faq-arrow { transform: rotate(180deg); }
+    .faq-arrow { transition: transform 0.3s; display: inline-block; }
+
+    /* ── Forms ── */
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.032);
+      border: 1px solid rgba(196,36,36,0.18);
+      border-radius: 6px; padding: 10px 13px;
+      color: #e8eaed; font-family: 'Inter',sans-serif;
+      font-size: 0.85rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: rgba(251,191,36,0.52); }
+    .form-input::placeholder { color: rgba(232,234,237,0.24); }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'DM Serif Display', serif;
+      font-size: 0.74rem; font-weight: 400;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(251,191,36,0.68);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(196,36,36,0.30), transparent);
+    }
+
+    /* ── Divider ── */
+    .exec-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,36,36,0.28), rgba(251,191,36,0.18), transparent);
+      margin: 6px 0 18px;
+    }
+
+    /* ── Feature image ── */
+    .spotlight-hover { position: relative; overflow: hidden; border-radius: 10px; cursor: pointer; }
+    .spotlight-hover img { width: 100%; height: 198px; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .spotlight-hover:hover img { transform: scale(1.04); }
+    .spotlight-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top,rgba(8,6,8,0.82) 0%,transparent 55%);
+      display: flex; align-items: flex-end; padding: 14px;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .spotlight-hover:hover .spotlight-overlay { opacity: 1; }
+
+    /* ── Executive seal SVG ── */
+    .exec-seal {
+      position: fixed; pointer-events: none; z-index: 1; opacity: 0.06;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Command stripe -->
+  <div class="command-stripe"></div>
+
+  <!-- Executive vignette -->
+  <div class="exec-vignette"></div>
+
+  <!-- Executive seal watermark -->
+  <svg class="exec-seal" style="bottom:60px;right:-40px;width:280px;height:280px;" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="90" fill="none" stroke="#df3b3b" stroke-width="1.5"/>
+    <circle cx="100" cy="100" r="80" fill="none" stroke="#df3b3b" stroke-width="0.5"/>
+    <circle cx="100" cy="100" r="65" fill="none" stroke="#fbbf24" stroke-width="1"/>
+    <polygon points="100,20 113,60 155,60 122,84 135,125 100,101 65,125 78,84 45,60 87,60" fill="none" stroke="#fbbf24" stroke-width="1"/>
+    <circle cx="100" cy="100" r="18" fill="none" stroke="#df3b3b" stroke-width="1"/>
+    <text x="100" y="168" text-anchor="middle" font-size="7" fill="#df3b3b" font-family="serif" letter-spacing="3">ESTJ · EXECUTIVE</text>
+  </svg>
+
+  <!-- Particle layer -->
+  <div id="particle-layer"></div>
+
+  <!-- ════════════════════════════════
+       MAIN WRAPPER
+  ════════════════════════════════ -->
+  <div style="position:relative;z-index:2;max-width:480px;margin:0 auto;padding:28px 16px 64px;">
+
+    <!-- ══════════════
+         HERO
+    ══════════════ -->
+    <section style="text-align:center;padding:46px 0 32px;" class="reveal">
+
+      <!-- Motto line -->
+      <p style="font-family:'DM Serif Display',serif;font-size:0.68rem;letter-spacing:0.24em;text-transform:uppercase;color:rgba(251,191,36,0.42);margin-bottom:18px;">
+        Lead · Execute · Deliver
+      </p>
+
+      <!-- Avatar -->
+      <div class="avatar-wrap" style="margin-bottom:20px;display:inline-block;">
+        <div class="avatar-ring"></div>
+        <img
+          class="avatar-img"
+          src="https://api.dicebear.com/9.x/shapes/svg?seed=estj&backgroundColor=100408&color=df3b3b,fbbf24,e8eaed,a31c1c"
+          alt="ESTJ Avatar"
+        />
+        <div class="status-dot"></div>
+      </div>
+
+      <!-- Title -->
+      <h1 class="shimmer-text" style="font-family:'DM Serif Display',serif;font-size:3rem;font-weight:400;letter-spacing:0.14em;margin-bottom:6px;line-height:1.05;">
+        ESTJ
+      </h1>
+      <p style="font-family:'DM Serif Display',serif;font-size:0.82rem;color:rgba(232,234,237,0.38);letter-spacing:0.18em;margin-bottom:14px;">
+        estj.kr · The Executive
+      </p>
+
+      <div class="exec-divider"></div>
+
+      <!-- Quote -->
+      <p style="font-family:'Noto Serif KR',serif;font-size:1.02rem;color:rgba(232,234,237,0.82);line-height:1.78;margin-bottom:20px;padding:0 8px;">
+        "결정은 빠르게, 실행은 완벽하게. 리더란 가장 먼저 움직이는 사람이다."
+      </p>
+
+      <!-- Tags -->
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:24px;">
+        <span class="tag-pill" style="background:rgba(196,36,36,0.14);border-color:rgba(196,36,36,0.36);color:#ec6d6d;">👔 임원</span>
+        <span class="tag-pill" style="background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.30);color:#fbbf24;">🏆 리더십</span>
+        <span class="tag-pill" style="background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.26);color:#4ade80;">✅ 결단</span>
+        <span class="tag-pill" style="background:rgba(96,165,250,0.10);border-color:rgba(96,165,250,0.26);color:#60a5fa;">📊 체계</span>
+        <span class="tag-pill" style="background:rgba(203,208,214,0.10);border-color:rgba(203,208,214,0.22);color:#cbd0d6;">⚖️ 원칙</span>
+      </div>
+
+      <!-- E·S·T·J Stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;">
+        <div class="estj-card" style="padding:13px 6px;text-align:center;border-top:2px solid #df3b3b;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:#df3b3b;">E</div>
+          <div style="font-size:0.6rem;color:rgba(232,234,237,0.38);margin-top:3px;letter-spacing:0.05em;">외향</div>
+        </div>
+        <div class="estj-card" style="padding:13px 6px;text-align:center;border-top:2px solid #fbbf24;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:#fbbf24;">S</div>
+          <div style="font-size:0.6rem;color:rgba(232,234,237,0.38);margin-top:3px;letter-spacing:0.05em;">감각</div>
+        </div>
+        <div class="estj-card" style="padding:13px 6px;text-align:center;border-top:2px solid #60a5fa;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:#60a5fa;">T</div>
+          <div style="font-size:0.6rem;color:rgba(232,234,237,0.38);margin-top:3px;letter-spacing:0.05em;">사고</div>
+        </div>
+        <div class="estj-card" style="padding:13px 6px;text-align:center;border-top:2px solid #4ade80;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;color:#4ade80;">J</div>
+          <div style="font-size:0.6rem;color:rgba(232,234,237,0.38);margin-top:3px;letter-spacing:0.05em;">판단</div>
+        </div>
+      </div>
+      <p style="font-size:0.62rem;color:rgba(232,234,237,0.20);text-align:center;letter-spacing:0.10em;">
+        Extraverted · Sensing · Thinking · Judging
+      </p>
+
+      <!-- KPI row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px;">
+        <div class="kpi-box" style="border-top-color:#df3b3b;">
+          <p style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:#df3b3b;line-height:1;">8~12%</p>
+          <p style="font-size:0.62rem;color:rgba(232,234,237,0.38);margin-top:4px;letter-spacing:0.04em;">인구 비율</p>
+        </div>
+        <div class="kpi-box" style="border-top-color:#fbbf24;">
+          <p style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fbbf24;line-height:1;">#1</p>
+          <p style="font-size:0.62rem;color:rgba(232,234,237,0.38);margin-top:4px;letter-spacing:0.04em;">리더십 유형</p>
+        </div>
+        <div class="kpi-box" style="border-top-color:#4ade80;">
+          <p style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:#4ade80;line-height:1;">100%</p>
+          <p style="font-size:0.62rem;color:rgba(232,234,237,0.38);margin-top:4px;letter-spacing:0.04em;">완수 의지</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         ANNOUNCEMENT
+    ══════════════ -->
+    <section style="margin-bottom:24px;" class="reveal">
+      <div style="
+        background:linear-gradient(135deg,rgba(196,36,36,0.14) 0%,rgba(251,191,36,0.07) 100%);
+        border:1px solid rgba(196,36,36,0.28);
+        border-left:3px solid #df3b3b;
+        border-radius:10px;padding:15px 18px;
+        display:flex;align-items:center;gap:13px;
+      ">
+        <span style="font-size:1.4rem;flex-shrink:0;">📢</span>
+        <div>
+          <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.92rem;letter-spacing:0.04em;color:#ec6d6d;margin-bottom:3px;">Executive Briefing Vol.7</p>
+          <p style="font-size:0.76rem;color:rgba(232,234,237,0.50);">새로운 전략 보고서가 발행되었습니다. 지금 확인하세요.</p>
+        </div>
+        <span style="margin-left:auto;font-size:0.72rem;color:rgba(196,36,36,0.60);flex-shrink:0;">→</span>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         SOCIAL LINKS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Connect</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:linear-gradient(135deg,#e1306c,#833ab4);">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </span>
+          <span style="flex:1;">Instagram</span>
+          <span style="font-size:0.72rem;color:rgba(232,234,237,0.28);">@estj.kr</span>
+        </a>
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:#ff0000;">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </span>
+          <span style="flex:1;">YouTube</span>
+          <span style="font-size:0.72rem;color:rgba(232,234,237,0.28);">ESTJ Channel</span>
+        </a>
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:#000;">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </span>
+          <span style="flex:1;">X (Twitter)</span>
+          <span style="font-size:0.72rem;color:rgba(232,234,237,0.28);">@estj_kr</span>
+        </a>
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:#24292e;">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </span>
+          <span style="flex:1;">GitHub</span>
+          <span style="font-size:0.72rem;color:rgba(232,234,237,0.28);">estj-kr</span>
+        </a>
+
+        <a href="mailto:hello@estj.kr" class="link-btn">
+          <span class="btn-icon" style="background:linear-gradient(135deg,#c42424,#fbbf24);">✉️</span>
+          <span style="flex:1;">Email</span>
+          <span style="font-size:0.72rem;color:rgba(232,234,237,0.28);">hello@estj.kr</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         EXECUTIVE TRAITS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Executive Traits</p>
+      <div style="display:flex;flex-direction:column;gap:11px;">
+
+        <div class="estj-card" style="padding:16px 18px;border-left:3px solid #df3b3b;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.25rem;">👔</span>
+            <div>
+              <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.92rem;letter-spacing:0.02em;color:#ec6d6d;">Leadership · 리더십</p>
+              <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);">방향을 정하고 팀을 이끄는 천부적 능력</p>
+            </div>
+            <span style="margin-left:auto;font-size:0.82rem;color:#ec6d6d;font-weight:600;">97%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:97%;background:linear-gradient(90deg,#a31c1c,#df3b3b);"></div>
+          </div>
+        </div>
+
+        <div class="estj-card" style="padding:16px 18px;border-left:3px solid #fbbf24;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.25rem;">⚙️</span>
+            <div>
+              <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.92rem;letter-spacing:0.02em;color:#fbbf24;">Execution · 실행력</p>
+              <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);">계획을 현실로 만드는 결단과 추진력</p>
+            </div>
+            <span style="margin-left:auto;font-size:0.82rem;color:#fbbf24;font-weight:600;">96%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:96%;background:linear-gradient(90deg,#d97706,#fbbf24);"></div>
+          </div>
+        </div>
+
+        <div class="estj-card" style="padding:16px 18px;border-left:3px solid #60a5fa;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.25rem;">📊</span>
+            <div>
+              <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.92rem;letter-spacing:0.02em;color:#60a5fa;">Organization · 조직력</p>
+              <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);">복잡한 구조를 단순하고 효율적으로 정비</p>
+            </div>
+            <span style="margin-left:auto;font-size:0.82rem;color:#60a5fa;font-weight:600;">94%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:94%;background:linear-gradient(90deg,#3b82f6,#60a5fa);"></div>
+          </div>
+        </div>
+
+        <div class="estj-card" style="padding:16px 18px;border-left:3px solid #4ade80;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.25rem;">⚖️</span>
+            <div>
+              <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.92rem;letter-spacing:0.02em;color:#4ade80;">Integrity · 원칙 준수</p>
+              <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);">규칙은 모두에게 공평하게 적용되어야 한다</p>
+            </div>
+            <span style="margin-left:auto;font-size:0.82rem;color:#4ade80;font-weight:600;">98%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:98%;background:linear-gradient(90deg,#22c55e,#4ade80);"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         ORG CHART (unique ESTJ section)
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Command Structure</p>
+      <div class="estj-card" style="padding:20px 16px;">
+
+        <!-- CEO level -->
+        <div style="display:flex;justify-content:center;margin-bottom:16px;">
+          <div class="org-node" style="border-color:rgba(196,36,36,0.45);border-top:2px solid #df3b3b;min-width:140px;">
+            <p style="font-family:'DM Serif Display',serif;font-size:0.85rem;color:#ec6d6d;letter-spacing:0.04em;">👔 ESTJ</p>
+            <p style="font-size:0.68rem;color:rgba(232,234,237,0.45);margin-top:2px;">Executive / Director</p>
+          </div>
+        </div>
+
+        <!-- Connector -->
+        <div style="display:flex;justify-content:center;margin-bottom:0;">
+          <div style="width:1px;height:16px;background:rgba(196,36,36,0.35);"></div>
+        </div>
+        <div style="display:flex;justify-content:center;margin-bottom:0;">
+          <div style="width:200px;height:1px;background:rgba(196,36,36,0.25);"></div>
+        </div>
+
+        <!-- Mid level -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0;margin-bottom:16px;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:1px;height:14px;background:rgba(196,36,36,0.30);"></div>
+            <div class="org-node" style="border-color:rgba(251,191,36,0.30);border-top:2px solid #fbbf24;width:100%;">
+              <p style="font-size:0.76rem;color:#fbbf24;font-weight:600;">📋 전략팀</p>
+              <p style="font-size:0.65rem;color:rgba(232,234,237,0.38);margin-top:1px;">Planning & Strategy</p>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:1px;height:14px;background:rgba(196,36,36,0.30);"></div>
+            <div class="org-node" style="border-color:rgba(96,165,250,0.30);border-top:2px solid #60a5fa;width:100%;">
+              <p style="font-size:0.76rem;color:#60a5fa;font-weight:600;">⚙️ 실행팀</p>
+              <p style="font-size:0.65rem;color:rgba(232,234,237,0.38);margin-top:1px;">Operations & Delivery</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connector 2 -->
+        <div style="display:flex;justify-content:center;">
+          <div style="width:1px;height:12px;background:rgba(74,222,128,0.30);"></div>
+        </div>
+
+        <!-- Bottom level -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+          <div class="org-node" style="border-color:rgba(74,222,128,0.22);padding:8px 6px;">
+            <p style="font-size:0.68rem;color:#4ade80;font-weight:600;">📐 품질</p>
+          </div>
+          <div class="org-node" style="border-color:rgba(203,208,214,0.22);padding:8px 6px;">
+            <p style="font-size:0.68rem;color:#cbd0d6;font-weight:600;">🤝 인사</p>
+          </div>
+          <div class="org-node" style="border-color:rgba(251,191,36,0.22);padding:8px 6px;">
+            <p style="font-size:0.68rem;color:#fbbf24;font-weight:600;">📊 보고</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         FEATURED VIDEO
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Featured Brief</p>
+      <div class="estj-card" style="overflow:hidden;padding:0;">
+        <div style="position:relative;padding-bottom:56.25%;height:0;">
+          <iframe
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="ESTJ Featured Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div style="padding:13px 15px;border-top:1px solid rgba(196,36,36,0.14);">
+          <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.9rem;letter-spacing:0.03em;color:#ec6d6d;margin-bottom:4px;">👔 The Executive's Playbook — 임원의 결단법</p>
+          <div style="display:flex;align-items:center;gap:11px;">
+            <span style="font-size:0.7rem;color:rgba(232,234,237,0.35);">👁 37.8K</span>
+            <span style="font-size:0.7rem;color:rgba(232,234,237,0.35);">❤️ 4.1K</span>
+            <span style="margin-left:auto;font-family:'DM Serif Display',serif;font-size:0.7rem;color:rgba(196,36,36,0.50);letter-spacing:0.06em;">ESTJ.kr</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         VIDEO PLAYLIST
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Briefing Room</p>
+      <div class="estj-card" style="padding:7px;">
+        <div style="display:flex;flex-direction:column;gap:1px;">
+
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(196,36,36,0.09)'" onmouseout="this.style.background='transparent'">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg" alt="" style="width:62px;height:46px;object-fit:cover;border-radius:6px;flex-shrink:0;" />
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:0.8rem;font-weight:500;color:#e8eaed;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">왜 ESTJ는 타협하지 않는가</p>
+              <p style="font-size:0.7rem;color:rgba(232,234,237,0.32);margin-top:2px;">25.3K · 10:18</p>
+            </div>
+            <span style="font-size:0.9rem;color:rgba(196,36,36,0.60);flex-shrink:0;">▶</span>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(196,36,36,0.09)'" onmouseout="this.style.background='transparent'">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg" alt="" style="width:62px;height:46px;object-fit:cover;border-radius:6px;flex-shrink:0;" />
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:0.8rem;font-weight:500;color:#e8eaed;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">조직을 움직이는 임원의 언어</p>
+              <p style="font-size:0.7rem;color:rgba(232,234,237,0.32);margin-top:2px;">19.7K · 8:44</p>
+            </div>
+            <span style="font-size:0.9rem;color:rgba(196,36,36,0.60);flex-shrink:0;">▶</span>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(196,36,36,0.09)'" onmouseout="this.style.background='transparent'">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg" alt="" style="width:62px;height:46px;object-fit:cover;border-radius:6px;flex-shrink:0;" />
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:0.8rem;font-weight:500;color:#e8eaed;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">효율을 최대화하는 시스템 설계</p>
+              <p style="font-size:0.7rem;color:rgba(232,234,237,0.32);margin-top:2px;">14.4K · 12:02</p>
+            </div>
+            <span style="font-size:0.9rem;color:rgba(196,36,36,0.60);flex-shrink:0;">▶</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         IMAGE CAROUSEL
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Gallery</p>
+      <div class="carousel-wrap" id="carousel">
+        <div class="carousel-track" id="carouselTrack">
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=480&q=80" alt="Executive" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(8,6,8,0.82),transparent);">
+              <p style="font-family:'DM Serif Display',serif;font-size:0.82rem;font-weight:400;letter-spacing:0.04em;color:#e8eaed;">👔 임원의 책상</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=480&q=80" alt="Leadership" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(8,6,8,0.82),transparent);">
+              <p style="font-family:'DM Serif Display',serif;font-size:0.82rem;font-weight:400;letter-spacing:0.04em;color:#e8eaed;">🏆 리더십 미팅</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=480&q=80" alt="Decisive" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(8,6,8,0.82),transparent);">
+              <p style="font-family:'DM Serif Display',serif;font-size:0.82rem;font-weight:400;letter-spacing:0.04em;color:#e8eaed;">⚖️ 결단의 순간</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=480&q=80" alt="Organization" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(8,6,8,0.82),transparent);">
+              <p style="font-family:'DM Serif Display',serif;font-size:0.82rem;font-weight:400;letter-spacing:0.04em;color:#e8eaed;">📊 조직과 체계</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=480&q=80" alt="Strategy" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(8,6,8,0.82),transparent);">
+              <p style="font-family:'DM Serif Display',serif;font-size:0.82rem;font-weight:400;letter-spacing:0.04em;color:#e8eaed;">📋 전략 수립</p>
+            </div>
+          </div>
+
+        </div>
+        <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous">‹</button>
+        <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Next">›</button>
+      </div>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </section>
+
+    <!-- ══════════════
+         FEATURE IMAGE
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Spotlight</p>
+      <div class="spotlight-hover estj-card" style="border:0;">
+        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=480&q=80" alt="ESTJ Spotlight" style="height:198px;" />
+        <div class="spotlight-overlay">
+          <span style="font-family:'DM Serif Display',serif;font-size:0.85rem;font-weight:400;letter-spacing:0.06em;color:#e8eaed;background:rgba(196,36,36,0.72);padding:6px 14px;border-radius:4px;">전략 보고서 열람 →</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         EXECUTION BOARD (unique ESTJ section)
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Execution Board</p>
+      <div class="estj-card" style="padding:16px 18px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+          <div style="padding:12px;background:rgba(196,36,36,0.08);border:1px solid rgba(196,36,36,0.20);border-radius:8px;">
+            <p style="font-size:0.65rem;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:rgba(232,234,237,0.38);margin-bottom:8px;">🔴 진행 중</p>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <p style="font-size:0.76rem;color:#e8eaed;padding:4px 8px;background:rgba(196,36,36,0.12);border-radius:4px;border-left:2px solid #df3b3b;">Q1 전략 실행</p>
+              <p style="font-size:0.76rem;color:#e8eaed;padding:4px 8px;background:rgba(196,36,36,0.12);border-radius:4px;border-left:2px solid #df3b3b;">팀 성과 점검</p>
+              <p style="font-size:0.76rem;color:#e8eaed;padding:4px 8px;background:rgba(196,36,36,0.12);border-radius:4px;border-left:2px solid #df3b3b;">시스템 감사</p>
+            </div>
+          </div>
+
+          <div style="padding:12px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.16);border-radius:8px;">
+            <p style="font-size:0.65rem;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:rgba(232,234,237,0.38);margin-bottom:8px;">✅ 완료</p>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <p style="font-size:0.76rem;color:rgba(232,234,237,0.55);padding:4px 8px;background:rgba(74,222,128,0.07);border-radius:4px;border-left:2px solid #4ade80;text-decoration:line-through;text-decoration-color:rgba(74,222,128,0.5);">연간 예산 승인</p>
+              <p style="font-size:0.76rem;color:rgba(232,234,237,0.55);padding:4px 8px;background:rgba(74,222,128,0.07);border-radius:4px;border-left:2px solid #4ade80;text-decoration:line-through;text-decoration-color:rgba(74,222,128,0.5);">인사 평가 완료</p>
+              <p style="font-size:0.76rem;color:rgba(232,234,237,0.55);padding:4px 8px;background:rgba(74,222,128,0.07);border-radius:4px;border-left:2px solid #4ade80;text-decoration:line-through;text-decoration-color:rgba(74,222,128,0.5);">규정 업데이트</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         MUSIC PLAYER
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Now Playing</p>
+      <div class="estj-card" style="padding:18px;">
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:13px;">
+          <div class="vinyl" id="vinyl"></div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.92rem;letter-spacing:0.04em;color:#ec6d6d;margin-bottom:2px;">Command Presence</p>
+            <p style="font-size:0.72rem;color:rgba(232,234,237,0.40);margin-bottom:7px;">ESTJ Suite Vol.7</p>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+          </div>
+          <button onclick="toggleMusic()" id="playBtn" style="
+            width:40px;height:40px;border-radius:50%;
+            background:linear-gradient(135deg,#c42424,#fbbf24);
+            border:none;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            font-size:1rem;flex-shrink:0;
+            box-shadow:0 0 14px rgba(196,36,36,0.40);
+            transition:transform 0.2s;
+          ">▶</button>
+        </div>
+        <div style="border-top:1px solid rgba(196,36,36,0.12);padding-top:11px;display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'DM Serif Display',serif;font-size:0.76rem;color:rgba(232,234,237,0.55);">1. Command Presence</span>
+            <span style="font-size:0.7rem;color:#fbbf24;">4:38</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'DM Serif Display',serif;font-size:0.76rem;color:rgba(232,234,237,0.30);">2. Iron Will</span>
+            <span style="font-size:0.7rem;color:rgba(232,234,237,0.25);">5:12</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'DM Serif Display',serif;font-size:0.76rem;color:rgba(232,234,237,0.30);">3. Due Process</span>
+            <span style="font-size:0.7rem;color:rgba(232,234,237,0.25);">4:55</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         PROJECT CARDS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Initiatives</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+
+        <div class="estj-card" style="padding:15px;border-top:2px solid #df3b3b;">
+          <span style="font-size:1.3rem;display:block;margin-bottom:7px;">📋</span>
+          <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.88rem;letter-spacing:0.02em;color:#ec6d6d;margin-bottom:3px;">Command Hub</p>
+          <p style="font-size:0.7rem;color:rgba(232,234,237,0.40);line-height:1.5;">조직 전략 통합 관리 플랫폼</p>
+        </div>
+
+        <div class="estj-card" style="padding:15px;border-top:2px solid #fbbf24;">
+          <span style="font-size:1.3rem;display:block;margin-bottom:7px;">📊</span>
+          <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.88rem;letter-spacing:0.02em;color:#fbbf24;margin-bottom:3px;">Exec Report</p>
+          <p style="font-size:0.7rem;color:rgba(232,234,237,0.40);line-height:1.5;">성과 지표 실시간 대시보드</p>
+        </div>
+
+        <div class="estj-card" style="padding:15px;border-top:2px solid #60a5fa;">
+          <span style="font-size:1.3rem;display:block;margin-bottom:7px;">⚖️</span>
+          <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.88rem;letter-spacing:0.02em;color:#60a5fa;margin-bottom:3px;">Policy Kit</p>
+          <p style="font-size:0.7rem;color:rgba(232,234,237,0.40);line-height:1.5;">원칙 기반 정책 설계 프레임</p>
+        </div>
+
+        <div class="estj-card" style="padding:15px;border-top:2px solid #4ade80;">
+          <span style="font-size:1.3rem;display:block;margin-bottom:7px;">🏆</span>
+          <p style="font-family:'DM Serif Display',serif;font-weight:400;font-size:0.88rem;letter-spacing:0.02em;color:#4ade80;margin-bottom:3px;">Lead Academy</p>
+          <p style="font-size:0.7rem;color:rgba(232,234,237,0.40);line-height:1.5;">차세대 리더 양성 프로그램</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         RECENT POSTS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <p class="section-label" style="margin-bottom:0;">Dispatches</p>
+        <a href="#" style="font-family:'DM Serif Display',serif;font-size:0.72rem;color:rgba(196,36,36,0.58);text-decoration:none;letter-spacing:0.06em;">All →</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+
+        <div class="estj-card" style="padding:13px 15px;cursor:pointer;border-left:3px solid #df3b3b;">
+          <p style="font-family:'Noto Serif KR',serif;font-size:0.84rem;font-weight:600;color:#e8eaed;margin-bottom:5px;">왜 ESTJ는 가장 믿을 수 있는 리더인가</p>
+          <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);line-height:1.6;">약속을 지키는 것이 리더십의 본질. ESTJ가 조직에서 신뢰를 얻는 방식.</p>
+          <div style="display:flex;gap:7px;margin-top:7px;align-items:center;">
+            <span class="tag-pill" style="background:rgba(196,36,36,0.12);border-color:rgba(196,36,36,0.28);color:#ec6d6d;font-size:0.60rem;">리더십</span>
+            <span style="font-size:0.62rem;color:rgba(232,234,237,0.24);margin-left:auto;letter-spacing:0.04em;">2026.02.22</span>
+          </div>
+        </div>
+
+        <div class="estj-card" style="padding:13px 15px;cursor:pointer;border-left:3px solid #fbbf24;">
+          <p style="font-family:'Noto Serif KR',serif;font-size:0.84rem;font-weight:600;color:#e8eaed;margin-bottom:5px;">효율은 습관이 아닌 시스템에서 온다</p>
+          <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);line-height:1.6;">ESTJ의 조직 설계 철학 — 훌륭한 시스템은 평범한 사람도 탁월하게 만든다.</p>
+          <div style="display:flex;gap:7px;margin-top:7px;align-items:center;">
+            <span class="tag-pill" style="background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.26);color:#fbbf24;font-size:0.60rem;">체계</span>
+            <span style="font-size:0.62rem;color:rgba(232,234,237,0.24);margin-left:auto;letter-spacing:0.04em;">2026.02.17</span>
+          </div>
+        </div>
+
+        <div class="estj-card" style="padding:13px 15px;cursor:pointer;border-left:3px solid #60a5fa;">
+          <p style="font-family:'Noto Serif KR',serif;font-size:0.84rem;font-weight:600;color:#e8eaed;margin-bottom:5px;">규칙 없는 자유는 무질서일 뿐이다</p>
+          <p style="font-size:0.72rem;color:rgba(232,234,237,0.42);line-height:1.6;">ESTJ의 원칙주의 — 왜 규칙은 모두에게 동등하게 적용되어야 하는가.</p>
+          <div style="display:flex;gap:7px;margin-top:7px;align-items:center;">
+            <span class="tag-pill" style="background:rgba(96,165,250,0.10);border-color:rgba(96,165,250,0.25);color:#60a5fa;font-size:0.60rem;">원칙</span>
+            <span style="font-size:0.62rem;color:rgba(232,234,237,0.24);margin-left:auto;letter-spacing:0.04em;">2026.02.11</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         FAQ
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">FAQ</p>
+      <div class="estj-card" style="padding:7px;display:flex;flex-direction:column;gap:2px;">
+
+        <details style="border-radius:8px;overflow:hidden;">
+          <summary style="padding:13px 14px;font-family:'DM Serif Display',serif;font-size:0.88rem;color:#e8eaed;display:flex;justify-content:space-between;align-items:center;">
+            <span>ESTJ는 어떤 유형인가요?</span>
+            <span class="faq-arrow" style="color:#fbbf24;font-size:0.72rem;">▼</span>
+          </summary>
+          <div style="padding:0 14px 13px;font-size:0.76rem;color:rgba(232,234,237,0.52);line-height:1.80;">
+            ESTJ는 외향(E)·감각(S)·사고(T)·판단(J)의 조합으로, 전체 인구의 약 8~12%입니다. "임원" 또는 "감독관"이라는 별명답게 책임감, 결단력, 탁월한 조직력으로 어디서든 자연스럽게 리더 역할을 맡습니다.
+          </div>
+        </details>
+
+        <details style="border-radius:8px;overflow:hidden;">
+          <summary style="padding:13px 14px;font-family:'DM Serif Display',serif;font-size:0.88rem;color:#e8eaed;display:flex;justify-content:space-between;align-items:center;">
+            <span>ESTJ의 핵심 강점은?</span>
+            <span class="faq-arrow" style="color:#fbbf24;font-size:0.72rem;">▼</span>
+          </summary>
+          <div style="padding:0 14px 13px;font-size:0.76rem;color:rgba(232,234,237,0.52);line-height:1.80;">
+            강력한 리더십, 탁월한 실행력, 체계적 조직 능력, 높은 책임감이 핵심 강점입니다. 목표가 정해지면 팀을 이끌고 반드시 완수하며, 규칙과 원칙을 일관되게 적용하여 조직 전체의 신뢰를 확보합니다.
+          </div>
+        </details>
+
+        <details style="border-radius:8px;overflow:hidden;">
+          <summary style="padding:13px 14px;font-family:'DM Serif Display',serif;font-size:0.88rem;color:#e8eaed;display:flex;justify-content:space-between;align-items:center;">
+            <span>estj.kr에 연락하려면?</span>
+            <span class="faq-arrow" style="color:#fbbf24;font-size:0.72rem;">▼</span>
+          </summary>
+          <div style="padding:0 14px 13px;font-size:0.76rem;color:rgba(232,234,237,0.52);line-height:1.80;">
+            <a href="mailto:hello@estj.kr" style="color:#fbbf24;text-decoration:none;">hello@estj.kr</a>로 이메일을 보내거나 아래 공식 연락 채널을 이용해 주세요. 목적과 내용을 명확히 작성해 주시면 신속히 검토하겠습니다.
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         NEWSLETTER
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">Subscribe</p>
+      <div class="estj-card" style="padding:20px 18px;">
+        <p style="font-family:'DM Serif Display',serif;font-size:1.02rem;font-weight:400;letter-spacing:0.04em;color:#ec6d6d;margin-bottom:5px;">Executive Briefing 구독하기</p>
+        <p style="font-size:0.76rem;color:rgba(232,234,237,0.42);margin-bottom:14px;line-height:1.68;">비공개 전략 분석, 리더십 인사이트, ESTJ 조직 설계 노트를 정기적으로 전달해 드립니다.</p>
+        <div id="subForm" style="display:flex;flex-direction:column;gap:9px;">
+          <input type="email" id="subEmail" placeholder="your@email.com" class="form-input" />
+          <button onclick="doSubscribe()" style="
+            padding:11px;border-radius:6px;
+            background:linear-gradient(135deg,#c42424,#fbbf24);
+            border:none;cursor:pointer;
+            font-family:'DM Serif Display',serif;
+            font-weight:400;font-size:0.95rem;letter-spacing:0.06em;color:#080608;
+            transition:opacity 0.2s;
+          " onmouseover="this.style.opacity='0.82'" onmouseout="this.style.opacity='1'">
+            📋 브리핑 구독하기
+          </button>
+        </div>
+        <div id="subSuccess" style="display:none;text-align:center;padding:11px;">
+          <p style="font-family:'DM Serif Display',serif;font-size:0.9rem;color:#4ade80;letter-spacing:0.04em;">✓ 등록 완료 — 다음 브리핑에서 뵙겠습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         CONTACT FORM
+    ══════════════ -->
+    <section style="margin-bottom:40px;" class="reveal">
+      <p class="section-label">Official Contact</p>
+      <div class="estj-card" style="padding:20px 18px;">
+        <p style="font-family:'DM Serif Display',serif;font-size:1.02rem;font-weight:400;letter-spacing:0.04em;color:#ec6d6d;margin-bottom:5px;">공식 채널로 제안하기</p>
+        <p style="font-size:0.76rem;color:rgba(232,234,237,0.42);margin-bottom:14px;line-height:1.68;">협업, 전략 자문, 강연 요청 — 명확한 목적과 함께 보내주세요.</p>
+        <div id="contactForm" style="display:flex;flex-direction:column;gap:9px;">
+          <input type="text"  id="contactName"  placeholder="성명 (소속)" class="form-input" />
+          <input type="email" id="contactEmail" placeholder="공식 이메일" class="form-input" />
+          <select id="contactTopic" class="form-input" style="appearance:none;-webkit-appearance:none;">
+            <option value="" disabled selected style="background:#130205;">문의 유형</option>
+            <option value="strategy" style="background:#130205;">📊 전략 자문</option>
+            <option value="collab"   style="background:#130205;">🤝 협업 제안</option>
+            <option value="speak"    style="background:#130205;">🎤 강연·인터뷰</option>
+            <option value="exec"     style="background:#130205;">👔 임원 네트워킹</option>
+            <option value="other"    style="background:#130205;">💬 기타</option>
+          </select>
+          <textarea id="contactMsg" placeholder="제안 내용을 명확하고 간결하게 작성해 주세요." class="form-input" style="resize:vertical;min-height:86px;"></textarea>
+          <button onclick="doContact()" style="
+            padding:11px;border-radius:6px;
+            background:linear-gradient(135deg,#c42424,#fbbf24);
+            border:none;cursor:pointer;
+            font-family:'DM Serif Display',serif;
+            font-weight:400;font-size:0.95rem;letter-spacing:0.06em;color:#080608;
+            transition:opacity 0.2s;
+          " onmouseover="this.style.opacity='0.82'" onmouseout="this.style.opacity='1'">
+            공식 제출하기 ✓
+          </button>
+        </div>
+        <div id="contactSuccess" style="display:none;text-align:center;padding:13px;">
+          <p style="font-family:'DM Serif Display',serif;font-size:0.9rem;color:#4ade80;letter-spacing:0.04em;">✓ 접수 완료 — 검토 후 연락드리겠습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         FOOTER
+    ══════════════ -->
+    <footer style="text-align:center;padding-top:22px;border-top:1px solid rgba(196,36,36,0.14);" class="reveal">
+      <div class="exec-divider" style="margin-bottom:16px;"></div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:14px;">
+        <span class="tag-pill" style="background:rgba(196,36,36,0.12);border-color:rgba(196,36,36,0.28);color:#ec6d6d;">Extraverted</span>
+        <span class="tag-pill" style="background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.25);color:#fbbf24;">Sensing</span>
+        <span class="tag-pill" style="background:rgba(96,165,250,0.10);border-color:rgba(96,165,250,0.24);color:#60a5fa;">Thinking</span>
+        <span class="tag-pill" style="background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.24);color:#4ade80;">Judging</span>
+      </div>
+      <p style="font-family:'DM Serif Display',serif;font-size:0.9rem;font-style:italic;color:rgba(232,234,237,0.34);margin-bottom:7px;">
+        "결정은 빠르게, 실행은 완벽하게."
+      </p>
+      <a href="https://estj.kr" style="font-family:'DM Serif Display',serif;font-size:0.82rem;font-weight:400;letter-spacing:0.12em;color:#fbbf24;text-decoration:none;">estj.kr</a>
+      <div class="exec-divider" style="margin-top:14px;margin-bottom:10px;"></div>
+      <p style="font-size:0.60rem;color:rgba(232,234,237,0.16);letter-spacing:0.08em;">
+        E · S · T · J · Made with Tailwind CSS 4
+      </p>
+    </footer>
+
+  </div><!-- /main wrapper -->
+
+  <script>
+    /* ══ Particles — rising embers & gold motes ══ */
+    (function() {
+      const layer  = document.getElementById('particle-layer');
+      const colors = ['#c42424','#df3b3b','#fbbf24','#e8eaed','#60a5fa','#4ade80','#ec6d6d'];
+
+      for (let i = 0; i < 46; i++) {
+        const p     = document.createElement('div');
+        p.className = 'particle';
+        const isDiamond = Math.random() > 0.7;
+        const size  = 2 + Math.random() * 5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const tx    = (Math.random() - 0.5) * 70;
+        const ty    = -(60 + Math.random() * 120);
+
+        p.style.cssText = `
+          width:${size}px; height:${size}px;
+          left:${Math.random() * 100}%;
+          top:${15 + Math.random() * 80}%;
+          background:${color};
+          border-radius:${isDiamond ? '2px' : '50%'};
+          transform:${isDiamond ? 'rotate(45deg)' : 'none'};
+          --dur:${9 + Math.random() * 13}s;
+          --delay:${Math.random() * 10}s;
+          --mop:${0.18 + Math.random() * 0.32};
+          --tx:${tx}px;
+          --ty:${ty}px;
+          box-shadow:0 0 ${3 + Math.random()*4}px ${color};
+        `;
+        layer.appendChild(p);
+      }
+    })();
+
+    /* ══ Scroll Reveal + Bar Animations ══ */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          e.target.querySelectorAll('.bar-fill').forEach(bar => {
+            const w = bar.style.getPropertyValue('--w');
+            if (w) bar.style.width = w;
+          });
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ══ Carousel ══ */
+    const track    = document.getElementById('carouselTrack');
+    const slides   = track ? track.querySelectorAll('.carousel-slide') : [];
+    const dotsWrap = document.getElementById('carouselDots');
+    let current    = 0, autoTimer, touchStartX = 0;
+
+    if (slides.length) {
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => gotoSlide(i));
+        dotsWrap.appendChild(dot);
+      });
+
+      function gotoSlide(n) {
+        current = (n + slides.length) % slides.length;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) =>
+          d.classList.toggle('active', i === current));
+      }
+
+      function startAuto() { autoTimer = setInterval(() => gotoSlide(current + 1), 4500); }
+      function stopAuto()  { clearInterval(autoTimer); }
+
+      document.getElementById('carouselPrev')?.addEventListener('click', () => { stopAuto(); gotoSlide(current - 1); startAuto(); });
+      document.getElementById('carouselNext')?.addEventListener('click', () => { stopAuto(); gotoSlide(current + 1); startAuto(); });
+
+      const cw = document.getElementById('carousel');
+      cw.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+      cw.addEventListener('touchend',   e => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 38) gotoSlide(dx < 0 ? current + 1 : current - 1);
+        startAuto();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft')  gotoSlide(current - 1);
+        if (e.key === 'ArrowRight') gotoSlide(current + 1);
+      });
+      cw.addEventListener('mouseenter', stopAuto);
+      cw.addEventListener('mouseleave', startAuto);
+      startAuto();
+    }
+
+    /* ══ Music Player ══ */
+    let playing = false;
+    function toggleMusic() {
+      playing = !playing;
+      const vinyl = document.getElementById('vinyl');
+      const btn   = document.getElementById('playBtn');
+      const prog  = document.getElementById('progressFill');
+      if (playing) {
+        vinyl.classList.add('vinyl-spin');
+        prog.classList.add('progress-anim');
+        btn.textContent = '⏸';
+        btn.style.background = 'linear-gradient(135deg,#fbbf24,#c42424)';
+      } else {
+        vinyl.classList.remove('vinyl-spin');
+        prog.classList.remove('progress-anim');
+        btn.textContent = '▶';
+        btn.style.background = 'linear-gradient(135deg,#c42424,#fbbf24)';
+      }
+    }
+
+    /* ══ Forms ══ */
+    function doSubscribe() {
+      const email = document.getElementById('subEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('subEmail').style.borderColor = '#ef4444';
+        return;
+      }
+      document.getElementById('subForm').style.display    = 'none';
+      document.getElementById('subSuccess').style.display = 'block';
+    }
+
+    function doContact() {
+      const name  = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const msg   = document.getElementById('contactMsg').value.trim();
+      if (!name || !email || !msg) return;
+      document.getElementById('contactForm').style.display    = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
